@@ -48,37 +48,13 @@ app.delete('/records/:id/delete', (req, res) => {
   res.send(`<h1>DELETE DELETE</h1>`)
 })
 
-// Routes - login/register
-// Login GET
-app.get('/users/login', (req, res) => {
-  res.render('login')
-})
-// Login POST
-app.post('/users/login', (req, res) => {
-  res.send(`<h1>User Login POST</h1>`)
-})
-// Register GET
-app.get('/users/register', (req, res) => {
-  res.render('register')
-})
-// Register POST
-app.post('/users/register', (req, res) => {
-  User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password
-  }).then(user => res.redirect('/'))
-
-})
-// Logout GET
-app.get('/users/logout', (req, res) => {
-  res.send(`<h1>Logout</h1>`)
-})
-
 // Routes - Sort by categories
 app.get('/screen/?', (req, res) => {
   res.send(`<h1>Sort by categories</h1>`)
 })
+
+// Routers
+app.use('/users', require('./routes/user'))
 
 app.listen(port, () => {
   console.log(`APP is running on port ${port}`)
