@@ -99,8 +99,8 @@
           <h4>${{{this.amount}}}</h4>
         </td>
         <td class="d-flex justify-content-end pt-4">
-          <a href="/records/{{{this._id}}}/edit" class="btn btn-success my-1 mr-1">修改</a>
-          <form action="/records/{{{this._id}}}/delete?_method=DELETE" method="POST" style="display: inline;">
+          <a href="/records/{{{this.id}}}/edit" class="btn btn-success my-1 mr-1">修改</a>
+          <form action="/records/{{{this.id}}}/delete?_method=DELETE" method="POST" style="display: inline;">
             <button type="submit" class="btn btn-danger my-1">刪除</button>
           </form>
         </td>
