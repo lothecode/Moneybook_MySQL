@@ -31,7 +31,7 @@ router.get('/', authenticated, (req, res) => {
     .catch((error) => { return res.status(422).json(error) })
 })
 
-// Add new GET
+// Add new expense
 router.get('/new', authenticated, (req, res) => {
   {
     const today = new Date
@@ -48,7 +48,7 @@ router.get('/new', authenticated, (req, res) => {
     return res.render('new', { categories, date })
   }
 })
-// Add new POST
+// Add new expense action
 router.post('/', authenticated, (req, res) => {
   console.log(req.body)
   Record.create({
@@ -63,17 +63,56 @@ router.post('/', authenticated, (req, res) => {
     })
     .catch((error) => { return res.status(422).json(error) })
 })
-// Edit one GET
-router.get('/:id/edit', (req, res) => {
-  res.render('edit')
+
+// edit one expense
+router.get('/:id/edit', authenticated, (req, res) => {
+  User.findByPk(req.user.id)
+    .then((user) => {
+      if (!user) throw new Error('User not found')
+      return Record.findOne({
+        where: {
+          Id: req.params.id,
+          UserId: req.user.id,
+        }
+      })
+    })
+    .then((record) => { return res.render('edit', { record: record.get() }) })
 })
-// Edit one PUT
-router.put('/:id', (req, res) => {
-  res.send(`<h1>EDIT PUT</h1>`)
+// edit one expense action
+router.put('/:id', authenticated, (req, res) => {
+  Record.findOne({
+    where: {
+      Id: req.params.id,
+      UserId: req.user.id,
+    }
+  })
+    .then((record) => {
+      record.name = req.body.name
+      record.category = req.body.category
+      record.date = req.body.date
+      record.amount = req.body.amount
+
+      return record.save()
+    })
+    .then((record) => { return res.redirect(`/records`) })
+    .catch((error) => { return res.status(422).json(error) })
 })
+
 // Delete one
-router.delete('/:id/delete', (req, res) => {
-  res.send(`<h1>DELETE DELETE</h1>`)
+router.delete('/:id/delete', authenticated, (req, res) => {
+  User.findByPk(req.user.id)
+    .then((user) => {
+      if (!user) throw new Error("user not found")
+
+      return Record.destroy({
+        where: {
+          UserId: req.user.id,
+          Id: req.params.id
+        }
+      })
+    })
+    .then((record) => { return res.redirect('/') })
+    .catch((error) => { return res.status(422).json(error) })
 })
 
 module.exports = router
