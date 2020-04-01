@@ -1,3 +1,111 @@
 <div class="col-md-7 mx-auto mt-4">
-  <h1>HOME page</h1>
+  {{!-- category select dropdowns  --}}
+  <div class="mb-5 text-center d-flex">
+    <div class="dropdown mx-auto">
+      <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false" data-offset="10,20">
+        {{#if showMonth}}
+        {{showMonth}}
+        {{else}}
+        月份(全部)
+        {{/if}}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month=-01-">一月</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month=-02-">二月</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month=-03-">三月</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month=-04-">四月</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month=-05-">五月</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month=-06-">六月</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month=-07-">七月</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month=-08-">八月</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month=-09-">九月</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month=-10-">十月</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month=-11-">十一月</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month=-12-">十二月</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month=">全部月份</a>
+      </div>
+    </div>
+
+    <div class="dropdown mx-auto">
+      <button class="btn btn-secondary dropdown-toggle " type="button" id="dropdownMenuLink" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        {{#if showCategory}}
+        {{showCategory}}
+        {{else}}
+        類別(全部)
+        {{/if}}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <a class="dropdown-item" href="/screen?cat=life&month={{{selectMonth}}}">家居物業</a>
+        <a class="dropdown-item" href="/screen?cat=travel&month={{{selectMonth}}}">交通出行</a>
+        <a class="dropdown-item" href="/screen?cat=happy&month={{{selectMonth}}}">休閒娛樂</a>
+        <a class="dropdown-item" href="/screen?cat=food&month={{{selectMonth}}}">餐飲食品</a>
+        <a class="dropdown-item" href="/screen?cat=others&month={{{selectMonth}}}">其他</a>
+        <a class="dropdown-item" href="/screen?cat=&month={{{selectMonth}}}">全部類別</a>
+      </div>
+    </div>
+    <div class="dropdown mx-auto">
+      <button class="btn btn-secondary dropdown-toggle " type="button" id="dropdownMenuLink" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        {{#if showOrder}}
+        {{{showOrder}}}
+        {{else}}
+        選擇排序
+        {{/if}}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month={{{selectMonth}}}&sort=dateAsc">時間
+          (舊->新)</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month={{{selectMonth}}}&sort=dateDesc">時間
+          (新->舊)</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month={{{selectMonth}}}&sort=amountDesc">金額
+          (多->少)</a>
+        <a class="dropdown-item" href="/screen?cat={{{selectCategory}}}&month={{{selectMonth}}}&sort=amountAsc">金額
+          (少->多)</a>
+      </div>
+    </div>
+  </div>
+
+  {{!-- total amount --}}
+  <div class="d-flex flex-column mb-4">
+    {{!-- Apply display utilities to create a flexbox container and transform direct children elements, flex-column 將裡面2項排成直的 --}}
+    <h4 class="mx-auto totalA">總金額 :</h4>
+    <h2 class="mx-auto" id="total">{{{total}}}</h2>
+  </div>
+
+  {{!-- add new one button--}}
+  <div class="text-center">
+    <a href="/records/new" class="btn w-50 mb-3 p-0 addbtn">
+      新增支出
+    </a>
+  </div>
+
+  {{!-- expense list --}}
+  <table class="table mb-5">
+    {{#each records}}
+    <tbody class="col-md-12 m-auto">
+      <tr>
+        <th scope="row" class="text-center">
+          <i class="{{{this.icon}}} icon"></i>
+        </th>
+        <td>
+          <div class="colum pt-1">
+            <h5>{{{this.name}}}</h5>
+            <p class="date my-1">{{{this.date}}}</p>
+          </div>
+        </td>
+        <td class="align-middle amount">
+          <h4>${{{this.amount}}}</h4>
+        </td>
+        <td class="d-flex justify-content-end pt-4">
+          <a href="/records/{{{this._id}}}/edit" class="btn btn-success my-1 mr-1">修改</a>
+          <form action="/records/{{{this._id}}}/delete?_method=DELETE" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-danger my-1">刪除</button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+    {{/each}}
+  </table>
 </div>

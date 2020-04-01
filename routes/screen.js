@@ -1,5 +1,7 @@
 const express = require('express')
 const router = express.Router()
+const categories = require('../data/categories.json')
+const months = require('../data/months.json')
 
 const db = require('../models')
 const User = db.User

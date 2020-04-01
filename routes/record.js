@@ -1,13 +1,31 @@
 const express = require('express')
 const router = express.Router()
+const categories = require('../data/categories.json')
 
 const db = require('../models')
 const User = db.User
 const Record = db.Record
 
+
 // List all
 router.get('/', (req, res) => {
-  res.render('index')
+  User.findByPk(req.user.id)
+    .then((user) => {
+      // console.log(req.user.id)
+      if (!user) throw new Error("user not found")
+      return Record.findAll({
+        where: { UserId: req.user.id }
+      })
+    })
+    .then((records) => {
+      let total = 0
+      records.forEach(item => {
+        total += item.amount
+        item.icon = categories[item.category].icon
+      })
+      return res.render('index', { categories, records, total })
+    })
+    .catch((error) => { return res.status(422).json(error) })
 })
 
 // Add new GET

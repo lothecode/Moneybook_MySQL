@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const exphbs = require('express-handlebars')
+const Handlebars = require('handlebars')
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const session = require('express-session')
@@ -33,6 +34,18 @@ app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg')
   res.locals.warning_msg = req.flash('warning_msg')
   next()
+})
+
+// Handlebars Helper 
+Handlebars.registerHelper('ifCond', function (v1, op, v2, options) {
+  switch (op) {
+    case '===':
+      return (v1 === v2) ? options.fn(this) : options.inverse(this)
+    case '!==':
+      return (v1 !== v2) ? options.fn(this) : options.inverse(this)
+    default:
+      return options.inverse(this);
+  }
 })
 
 // Routers
