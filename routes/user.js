@@ -6,15 +6,18 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
 
-// Routes - login/register
 // Login GET
 router.get('/login', (req, res) => {
   res.render('login')
 })
-// Login POST
-router.post('/login', (req, res) => {
-  res.send(`<h1>User Login POST</h1>`)
+// 登入檢查
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/users/login'
+  })(req, res, next)
 })
+
 // Register GET
 router.get('/register', (req, res) => {
   res.render('register')
@@ -22,34 +25,60 @@ router.get('/register', (req, res) => {
 // Register POST
 router.post('/register', (req, res) => {
   const { name, email, password, password2 } = req.body
-  User.findOne({ where: { email: email } }).then(user => {
-    if (user) {
-      console.log('User already exists')
-      res.render('register', {
-        name,
-        email,
-        password,
-        password2
-      })
-    } else {
-      const newUser = new User({
-        name,
-        email,
-        password
-      })
-      newUser
-        .save()
-        .then(user => {
-          res.rendirect('/')
+  let errors = []
+  if (!name || !email || !password || !password2) {
+    errors.push({ message: '所有欄位都是必填' })
+  }
+  if (password != password2) {
+    errors.push({ message: '密碼輸入錯誤' })
+  }
+  if (errors.length > 0) {
+    res.render('register', {
+      errors,
+      name,
+      email,
+      password,
+      password2
+    })
+  } else {
+    User.findOne({ where: { email: email } }).then(user => {
+      if (user) {
+        errors.push({ message: '這個email已註冊過了' })
+        res.render('register', {
+          errors,
+          name,
+          email,
+          password,
+          password2
         })
-        .catch(err => console.log(err))
-    }
-  })
+      } else {
+        const newUser = new User({
+          name,
+          email,
+          password
+        })
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(newUser.password, salt, (err, hash) => {
+            if (err) throw err
+            newUser.password = hash
+            newUser
+              .save()
+              .then((user) => {
+                res.redirect('/')
+              })
+              .catch(err => { console.log(err) })
+          })
+        })
+      }
+    })
+  }
 })
 
 // Logout GET
 router.get('/logout', (req, res) => {
-  res.send(`<h1>Logout</h1>`)
+  req.logout()
+  req.flash('success_msg', '你已經成功登出')
+  res.redirect('/users/login')
 })
 
 module.exports = router
