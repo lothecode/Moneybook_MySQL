@@ -12,6 +12,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('public'))
 app.use(methodOverride('_method'))
 
+const db = require('./models')
+const Record = db.Record
+const User = db.User
 
 // Routes - CRUD
 // Home
@@ -60,7 +63,12 @@ app.get('/users/register', (req, res) => {
 })
 // Register POST
 app.post('/users/register', (req, res) => {
-  res.send(`<h1>User Register POST</h1>`)
+  User.create({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password
+  }).then(user => res.redirect('/'))
+
 })
 // Logout GET
 app.get('/users/logout', (req, res) => {
