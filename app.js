@@ -7,8 +7,12 @@ const methodOverride = require('method-override')
 const session = require('express-session')
 const passport = require('passport')
 const flash = require('connect-flash')
-
 const port = 3000
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const db = require('./models')
 const Record = db.Record
 const User = db.User
@@ -21,14 +25,14 @@ app.use(express.static('public'))
 app.use(methodOverride('_method'))
 app.use(flash())
 app.use(session({
-  secret: 'secret key',
+  secret: 'secretkey',
   resave: 'false',
   saveUninitialized: 'false',
 }))
-
 app.use(passport.initialize())
 app.use(passport.session())
 require('./config/passport')(passport)
+
 app.use((req, res, next) => {
   res.locals.user = req.user
   res.locals.isAuthenticated = req.isAuthenticated()
@@ -54,7 +58,8 @@ app.use('/users', require('./routes/user'))
 app.use('/records', require('./routes/record'))
 app.use('/', require('./routes/home'))
 app.use('/screen', require('./routes/screen'))
+app.use('/auth', require('./routes/auths'))
 
-app.listen(port, () => {
+app.listen(process.env.PORT || port, () => {
   console.log(`APP is running on port ${port}`)
 })

@@ -1,5 +1,5 @@
 <div class="col-md-7 mx-auto mt-4">
-  {{!-- category select dropdowns  --}}
+  {{!-- month select dropdowns  --}}
   <div class="mb-5 text-center d-flex">
     <div class="dropdown mx-auto">
       <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown"
@@ -26,7 +26,7 @@
         <a class="dropdown-item" href="/screen?month=&cat={{{selectCategory}}}&sort={{{selectOrder}}}">全部月份</a>
       </div>
     </div>
-
+    {{!-- category select dropdowns  --}}
     <div class="dropdown mx-auto">
       <button class="btn btn-secondary dropdown-toggle " type="button" id="dropdownMenuLink" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
@@ -45,6 +45,7 @@
         <a class="dropdown-item" href="/screen?month={{{selectMonth}}}&cat=&sort={{{selectOrder}}}">全部類別</a>
       </div>
     </div>
+    {{!-- sorting select dropdowns  --}}
     <div class="dropdown mx-auto">
       <button class="btn btn-secondary dropdown-toggle " type="button" id="dropdownMenuLink" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
@@ -69,7 +70,6 @@
 
   {{!-- total amount --}}
   <div class="d-flex flex-column mb-4">
-    {{!-- Apply display utilities to create a flexbox container and transform direct children elements, flex-column 將裡面2項排成直的 --}}
     <h4 class="mx-auto totalA">總金額 :</h4>
     <h2 class="mx-auto" id="total">{{{total}}}</h2>
   </div>
